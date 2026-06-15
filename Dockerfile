@@ -1,11 +1,11 @@
-# 第一階段：編譯
-FROM maven:3.8.5-eclipse-temurin-17 AS build
+# 第一階段：使用 Adoptium 完整路徑來編譯
+FROM docker.io/library/eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# 第二階段：執行
-FROM eclipse-temurin:17-jre-slim
+# 第二階段：使用 Adoptium 完整路徑來執行
+FROM docker.io/library/eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
