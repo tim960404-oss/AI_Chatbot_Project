@@ -1,27 +1,19 @@
 package com.example.demo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/chat")
 public class HatController {
 
-    // 關鍵：這會自動去讀取 application.properties 裡的設定
     @Value("${gemini.api.key}")
     private String apiKey;
 
     @PostMapping("/send")
     public String handleChat(@RequestBody Map<String, String> request) {
-        // 使用從環境變數注入的 apiKey
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
         
         String incomingMsg = request.getOrDefault("content", "");
@@ -46,7 +38,10 @@ public class HatController {
             List<Map<String, Object>> parts = (List<Map<String, Object>>) contentMap.get("parts");
             return (String) parts.get(0).get("text");
         } catch (Exception e) {
-            return "軍師暫時離線 (API 錯誤): " + e.getMessage();
+            if (e.getMessage().contains("429")) {
+                return "軍師正在深思熟慮，請稍候 30 秒再問喔！";
+            }
+            return "軍師暫時離線: " + e.getMessage();
         }
     }
 }
