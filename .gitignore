@@ -11,4 +11,4 @@ application.properties
 
 # IDE 設定
 .vscode/
-.idea/
+.idea/chat.db
