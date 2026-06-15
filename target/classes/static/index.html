@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戀愛軍師 AI</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f8f9fa; display: flex; justify-content: center; padding: 20px; }
+        .app-container { width: 100%; max-width: 450px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #ee5253; }
+        #responseArea { margin-top: 20px; padding: 15px; background: #fff4f4; border-left: 5px solid #ff6b6b; border-radius: 5px; min-height: 50px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>戀愛軍師 AI</h2>
+    
+    <div class="field">
+        <label>我是：</label>
+        <select id="userGender">
+            <option value="male">男生</option>
+            <option value="female">女生</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>我想攻略的對象：</label>
+        <select id="targetGender">
+            <option value="male">男生 (男友)</option>
+            <option value="female">女生 (女友)</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>對方對我說的話：</label>
+        <input type="text" id="msg" placeholder="例如：你今天怎麼都沒傳訊息給我？">
+    </div>
+
+    <button onclick="send()">獲取軍師建議</button>
+
+    <div id="responseArea">軍師建議將顯示於此...</div>
+</div>
+
+<script>
+    async function send() {
+        const responseArea = document.getElementById('responseArea');
+        responseArea.innerText = "軍師正在構思中...";
+        
+        try {
+            const res = await fetch('/api/chat/send', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    content: document.getElementById('msg').value, 
+                    userGender: document.getElementById('userGender').value,
+                    targetGender: document.getElementById('targetGender').value
+                })
+            });
+            const text = await res.text();
+            responseArea.innerText = text;
+        } catch (e) {
+            responseArea.innerText = "發生錯誤，請檢查後端是否啟動。";
+        }
+    }
+</script>
+
+</body>
+</html>

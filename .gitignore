@@ -1,0 +1,14 @@
+# 編譯產物
+target/
+
+# 資料庫檔案
+*.db
+*.sqlite
+
+# 設定與環境檔案 (隱藏你的 API Key)
+application.properties
+.env
+
+# IDE 設定
+.vscode/
+.idea/
